@@ -1,4 +1,28 @@
 package lk.kaushalya.jms;
 
-public class MessageReceiver {
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.ActivationConfigProperty;
+import jakarta.ejb.MessageDriven;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
+
+@MessageDriven(activationConfig = {
+        @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "myTopic"),
+})
+public class MessageReceiver implements MessageListener {
+
+    @PostConstruct
+    public void init(){
+        System.out.println("MessageReceiver initialized .........");
+    }
+
+    @Override
+    public void onMessage(Message message) {
+        try {
+            System.out.println("MessageReceiver onMessage : "+message.getBody(String.class));
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
